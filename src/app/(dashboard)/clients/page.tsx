@@ -82,14 +82,14 @@ export default function ClientsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search clients..."
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50/50"
           />
         </div>
         <div className="flex items-center gap-2">
           <ExportButtons data={exportData} filename="clients" />
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Client
@@ -97,10 +97,10 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-50/80 border-b border-gray-100">
               <tr>
                 {["Client ID", "Name", "Email", "Phone", "Country", "Business", "Platform", "Added By", "Date", ""].map((h) => (
                   <th key={h} className="px-4 py-3 text-left font-medium text-gray-600 whitespace-nowrap">{h}</th>
@@ -115,7 +115,7 @@ export default function ClientsPage() {
               ) : (
                 filtered.map((c) => (
                   <tr key={c.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-xs text-blue-600 font-medium">{c.clientId}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-violet-600 font-medium">{c.clientId}</td>
                     <td className="px-4 py-3 font-medium">{c.name}</td>
                     <td className="px-4 py-3 text-gray-600">{c.email}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone}</td>
@@ -126,10 +126,10 @@ export default function ClientsPage() {
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatDate(c.createdAt)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
-                        <button onClick={() => openEdit(c)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">
+                        <button onClick={() => openEdit(c)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => del(c.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-500">
+                        <button onClick={() => del(c.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-400">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -143,7 +143,7 @@ export default function ClientsPage() {
       </div>
 
       <Modal isOpen={!!modal} onClose={() => setModal(null)} title={modal === "add" ? "Add Client" : "Edit Client"} size="lg">
-        {error && <p className="mb-3 text-sm text-red-500 bg-red-50 p-2 rounded-lg">{error}</p>}
+        {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-xl font-medium">{error}</p>}
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Client Name" required>
             <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass()} placeholder="John Doe" />
@@ -165,8 +165,8 @@ export default function ClientsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
-          <button onClick={save} disabled={loading} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600">Cancel</button>
+          <button onClick={save} disabled={loading} className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm">
             {loading ? "Saving..." : "Save"}
           </button>
         </div>

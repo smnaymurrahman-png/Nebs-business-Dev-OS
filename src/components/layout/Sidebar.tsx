@@ -42,28 +42,34 @@ export function Sidebar() {
   const { data: session } = useSession();
   const role = (session?.user as { role?: string })?.role;
 
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(href + "/");
+
   return (
-    <div className="flex flex-col w-64 min-h-screen bg-gray-900 text-white">
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-gray-700">
-        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">
-          N
+    <div className="flex flex-col w-64 min-h-screen bg-white border-r border-gray-100 shadow-sm">
+      {/* Brand */}
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-100">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md shadow-violet-200">
+          <span className="text-white font-bold text-sm">N</span>
         </div>
         <div>
-          <p className="text-sm font-bold leading-tight">Nebs BD OS</p>
-          <p className="text-xs text-gray-400">Business Dev Portal</p>
+          <p className="text-sm font-700 font-semibold text-gray-900 leading-tight">Nebs BD OS</p>
+          <p className="text-[11px] text-violet-500 font-medium">Business Dev Portal</p>
         </div>
       </div>
 
+      {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">Main Menu</p>
         {navItems.map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-              pathname === href || pathname.startsWith(href + "/")
-                ? "bg-blue-600 text-white"
-                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+              "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
+              isActive(href)
+                ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200"
+                : "text-gray-500 hover:bg-violet-50 hover:text-violet-700"
             )}
           >
             <Icon className="w-4 h-4 shrink-0" />
@@ -73,18 +79,16 @@ export function Sidebar() {
 
         {(role === "ADMIN" || role === "SUPER_ADMIN") && (
           <>
-            <div className="pt-3 pb-1 px-3">
-              <p className="text-xs text-gray-500 uppercase tracking-wider">Admin</p>
-            </div>
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 pt-4 mb-2">Admin</p>
             {adminItems.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                  pathname === href
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
+                  isActive(href)
+                    ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200"
+                    : "text-gray-500 hover:bg-violet-50 hover:text-violet-700"
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -96,18 +100,16 @@ export function Sidebar() {
 
         {role === "SUPER_ADMIN" && (
           <>
-            <div className="pt-3 pb-1 px-3">
-              <p className="text-xs text-gray-500 uppercase tracking-wider">Super Admin</p>
-            </div>
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 pt-4 mb-2">Super Admin</p>
             {superAdminItems.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                  pathname === href
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
+                  isActive(href)
+                    ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200"
+                    : "text-gray-500 hover:bg-violet-50 hover:text-violet-700"
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -118,19 +120,20 @@ export function Sidebar() {
         )}
       </nav>
 
-      <div className="px-3 py-4 border-t border-gray-700">
-        <div className="flex items-center gap-3 px-3 py-2 mb-1">
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
+      {/* User footer */}
+      <div className="px-3 py-4 border-t border-gray-100">
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-violet-50 mb-1">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white shadow-sm shadow-violet-200 shrink-0">
             {session?.user?.name?.[0]?.toUpperCase() ?? "U"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{session?.user?.name}</p>
-            <p className="text-xs text-gray-400 truncate">{role}</p>
+            <p className="text-sm font-semibold text-gray-800 truncate">{session?.user?.name}</p>
+            <p className="text-[11px] text-violet-500 font-medium truncate">{role}</p>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150"
         >
           <LogOut className="w-4 h-4" />
           Sign Out

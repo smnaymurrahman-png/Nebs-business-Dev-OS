@@ -11,24 +11,24 @@ interface FormFieldProps {
 
 export function FormField({ label, required, error, children, className }: FormFieldProps) {
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
-      <label className="text-sm font-medium text-gray-700">
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
     </div>
   );
 }
 
 export function inputClass(error?: string) {
   return cn(
-    "w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-    error ? "border-red-400" : "border-gray-300"
+    "w-full px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent bg-gray-50/50 transition-all font-medium",
+    error ? "border-red-300" : "border-gray-200"
   );
 }
 
 export function selectClass() {
-  return "w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white";
+  return "w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50/50 transition-all font-medium";
 }
