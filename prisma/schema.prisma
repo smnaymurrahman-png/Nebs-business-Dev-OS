@@ -1,0 +1,278 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum ServiceType {
+  WORDPRESS
+  FULL_STACK
+  UI_UX
+  WEBFLOW
+  SHOPIFY
+  DIGITAL_MARKETING
+  OTHER
+}
+
+enum ProposalStatus {
+  PROPOSAL_SENT
+  COMMUNICATION_RUNNING
+  PAYMENT_PENDING
+  PROPOSAL_REJECTED
+  ORDER_COMPLETED
+}
+
+enum ProfileType {
+  UI_UX
+  WORDPRESS
+  FULL_STACK
+  DIGITAL_MARKETING
+  WEBFLOW_SHOPIFY_FRAMER
+  OTHER
+}
+
+enum AccountType {
+  PAID
+  FREE
+}
+
+enum SubscriptionType {
+  MONTHLY
+  YEARLY
+}
+
+enum LeadType {
+  COLD
+  HOT
+  WARM
+}
+
+enum ConnectionType {
+  BY_PHONE
+  BY_EMAIL
+  BY_WHATSAPP
+}
+
+enum LeadStatus {
+  INTERESTED
+  NOT_INTERESTED
+  NO_RESPONSE
+  FOLLOW_UP
+  PENDING_DECISION
+}
+
+enum AdPlatform {
+  GOOGLE_ADS
+  YOUTUBE_ADS
+  BING_ADS
+  OTHER_ADS
+}
+
+enum BudgetType {
+  DAILY
+  LIFETIME
+}
+
+enum PriorityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  password    String
+  designation String?
+  role        Role     @default(USER)
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clients             Client[]
+  proposals           Proposal[]
+  accounts            Account[]
+  marketplaceProfiles MarketplaceProfile[]
+  leads               Lead[]
+  reports             Report[]
+  meetings            Meeting[]
+  meetingAssignments  MeetingAssignment[]
+
+  @@map("users")
+}
+
+model Client {
+  id           String   @id @default(cuid())
+  clientId     String   @unique
+  name         String
+  email        String
+  phone        String
+  country      String
+  businessName String
+  platform     String
+  createdById  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user      User       @relation(fields: [createdById], references: [id])
+  proposals Proposal[]
+
+  @@map("clients")
+}
+
+model Proposal {
+  id              String         @id @default(cuid())
+  clientId        String
+  platform        String
+  projectName     String
+  projectDetails  String
+  amount          Float
+  proposal        String
+  messageToClient String
+  connectIn       Int
+  costing         Float
+  serviceType     ServiceType
+  currentStatus   ProposalStatus @default(PROPOSAL_SENT)
+  followUp        Int            @default(0)
+  remark          String?
+  createdById     String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id])
+  user   User   @relation(fields: [createdById], references: [id])
+
+  @@map("proposals")
+}
+
+model Account {
+  id               String           @id @default(cuid())
+  platformName     String
+  profileName      String
+  emailAddress     String
+  password         String
+  phoneNumber      String
+  specialQuestion  String?
+  specialAnswer    String?
+  profileType      ProfileType
+  accountType      AccountType
+  subscriptionType SubscriptionType
+  amount           Float
+  assignedPerson   String?
+  assignedDevice   String?
+  assignedIp       String?
+  additionalDevice String?
+  createdById      String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user User @relation(fields: [createdById], references: [id])
+
+  @@map("accounts")
+}
+
+model MarketplaceProfile {
+  id              String      @id @default(cuid())
+  platformName    String
+  profileName     String
+  emailAddress    String
+  password        String
+  phoneNumber     String
+  specialQuestion String?
+  specialAnswer   String?
+  profileType     ProfileType
+  isPaid          Boolean     @default(false)
+  totalInvestment Float       @default(0)
+  amount          Float
+  assignedPerson  String?
+  assignedDevice  String?
+  assignedIp      String?
+  createdById     String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user User @relation(fields: [createdById], references: [id])
+
+  @@map("marketplace_profiles")
+}
+
+model Lead {
+  id              String          @id @default(cuid())
+  fullName        String
+  emailAddress    String
+  phoneNumber     String
+  website         String?
+  businessName    String
+  businessDetails String
+  leadType        LeadType
+  leadFrom        String
+  isPaid          Boolean         @default(false)
+  connection      ConnectionType?
+  leadStatus      LeadStatus      @default(INTERESTED)
+  lastUpdate      String?
+  createdById     String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user User @relation(fields: [createdById], references: [id])
+
+  @@map("leads")
+}
+
+model Report {
+  id              String     @id @default(cuid())
+  platform        AdPlatform
+  landingPageLink String
+  adsStartingDate DateTime
+  budgetType      BudgetType
+  budget          Float
+  totalSpend      Float      @default(0)
+  totalClicks     Int        @default(0)
+  totalLeads      Int        @default(0)
+  totalMeetings   Int        @default(0)
+  createdById     String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  user User @relation(fields: [createdById], references: [id])
+
+  @@map("reports")
+}
+
+model Meeting {
+  id            String        @id @default(cuid())
+  meetingDate   DateTime
+  meetingTopic  String
+  priorityLevel PriorityLevel
+  createdById   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user      User                @relation(fields: [createdById], references: [id])
+  assignees MeetingAssignment[]
+
+  @@map("meetings")
+}
+
+model MeetingAssignment {
+  id        String @id @default(cuid())
+  meetingId String
+  userId    String
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([meetingId, userId])
+  @@map("meeting_assignments")
+}
