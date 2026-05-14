@@ -102,7 +102,7 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={BarChart2} label="Total Reports" value={reports.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={DollarSign} label="Total Spend" value={formatCurrency(totalSpend)} iconBg="bg-gradient-to-br from-orange-50 to-orange-100" iconColor="text-orange-600" />
         <StatCard icon={Users} label="Total Leads" value={totalLeads.toLocaleString()} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />

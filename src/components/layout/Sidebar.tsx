@@ -20,14 +20,14 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard",  label: "Dashboard",     icon: LayoutDashboard },
-  { href: "/clients",    label: "Clients",        icon: Users },
-  { href: "/proposals",  label: "Proposals",      icon: FileText },
-  { href: "/accounts",   label: "Accounts",       icon: Building2 },
-  { href: "/marketplace",label: "Marketplace",    icon: Store },
-  { href: "/leads",      label: "Leads",          icon: TrendingUp },
-  { href: "/reports",    label: "Reports",        icon: BarChart3 },
-  { href: "/meetings",   label: "Meeting Center", icon: CalendarDays },
+  { href: "/dashboard",   label: "Dashboard",      icon: LayoutDashboard },
+  { href: "/clients",     label: "Clients",         icon: Users },
+  { href: "/proposals",   label: "Proposals",       icon: FileText },
+  { href: "/accounts",    label: "Accounts",        icon: Building2 },
+  { href: "/marketplace", label: "Marketplace",     icon: Store },
+  { href: "/leads",       label: "Leads",           icon: TrendingUp },
+  { href: "/reports",     label: "Reports",         icon: BarChart3 },
+  { href: "/meetings",    label: "Meeting Center",  icon: CalendarDays },
 ];
 
 const adminItems = [
@@ -50,13 +50,24 @@ const ROLE_COLORS: Record<string, string> = {
   USER: "bg-gray-100 text-gray-600",
 };
 
-function NavLink({ href, label, icon: Icon }: { href: string; label: string; icon: React.ElementType }) {
+function NavLink({
+  href,
+  label,
+  icon: Icon,
+  onClose,
+}: {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + "/");
 
   return (
     <Link
       href={href}
+      onClick={onClose}
       className={cn(
         "group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
         active
@@ -79,15 +90,28 @@ function SectionLabel({ label }: { label: string }) {
   );
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { data: session } = useSession();
   const role = (session?.user as { role?: string })?.role ?? "USER";
   const name = session?.user?.name ?? "User";
   const initial = name[0]?.toUpperCase() ?? "U";
 
   return (
-    <aside className="flex flex-col w-[260px] min-h-screen bg-white border-r border-[#E2E8F0] shrink-0">
-
+    <aside
+      className={cn(
+        "flex flex-col w-[260px] min-h-screen bg-white border-r border-[#E2E8F0] shrink-0 z-50 transition-transform duration-300 ease-in-out",
+        // Mobile: fixed overlay, slides in/out
+        "fixed inset-y-0 left-0",
+        isOpen ? "translate-x-0" : "-translate-x-full",
+        // Desktop: always visible in normal flow
+        "lg:relative lg:translate-x-0"
+      )}
+    >
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 pt-6 pb-5">
         <div className="relative w-9 h-9 shrink-0">
@@ -101,21 +125,20 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Divider */}
       <div className="mx-4 h-px bg-slate-100 mb-2" />
 
       {/* Navigation */}
       <nav className="flex-1 px-3 overflow-y-auto pb-2">
         <SectionLabel label="Main Menu" />
         <div className="space-y-0.5">
-          {navItems.map((item) => <NavLink key={item.href} {...item} />)}
+          {navItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
         </div>
 
         {(role === "ADMIN" || role === "SUPER_ADMIN") && (
           <>
             <SectionLabel label="Admin" />
             <div className="space-y-0.5">
-              {adminItems.map((item) => <NavLink key={item.href} {...item} />)}
+              {adminItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
             </div>
           </>
         )}
@@ -124,7 +147,7 @@ export function Sidebar() {
           <>
             <SectionLabel label="Super Admin" />
             <div className="space-y-0.5">
-              {superAdminItems.map((item) => <NavLink key={item.href} {...item} />)}
+              {superAdminItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
             </div>
           </>
         )}
@@ -134,7 +157,6 @@ export function Sidebar() {
       <div className="px-3 pb-4 pt-2">
         <div className="mx-px h-px bg-slate-100 mb-3" />
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-gradient-to-br from-slate-50 to-violet-50/40 border border-slate-100">
-          {/* Avatar */}
           <div className="relative shrink-0">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
               {initial}

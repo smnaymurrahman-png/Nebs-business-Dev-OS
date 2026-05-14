@@ -117,7 +117,7 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={Users} label="Total Members" value={users.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={Shield} label="Admins" value={admins} iconBg="bg-gradient-to-br from-indigo-50 to-indigo-100" iconColor="text-indigo-600" />
         <StatCard icon={ShieldCheck} label="Super Admins" value={superAdmins} iconBg="bg-gradient-to-br from-purple-50 to-purple-100" iconColor="text-purple-600" />

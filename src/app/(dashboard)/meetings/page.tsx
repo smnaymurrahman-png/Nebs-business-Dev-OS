@@ -100,7 +100,7 @@ export default function MeetingsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={CalendarClock} label="Total Meetings" value={meetings.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={CalendarCheck} label="Upcoming" value={meetings.filter((m) => new Date(m.meetingDate) >= now).length} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
         <StatCard icon={CalendarX} label="Past" value={meetings.filter((m) => new Date(m.meetingDate) < now).length} iconBg="bg-gradient-to-br from-slate-50 to-slate-100" iconColor="text-slate-500" />

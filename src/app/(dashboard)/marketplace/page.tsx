@@ -107,7 +107,7 @@ export default function MarketplacePage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={Store} label="Total Profiles" value={profiles.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={BadgeDollarSign} label="Paid Profiles" value={paid} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
         <StatCard icon={PiggyBank} label="Total Investment" value={formatCurrency(totalInvestment)} iconBg="bg-gradient-to-br from-orange-50 to-orange-100" iconColor="text-orange-600" />

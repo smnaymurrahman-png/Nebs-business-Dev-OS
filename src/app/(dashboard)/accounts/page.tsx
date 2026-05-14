@@ -109,7 +109,7 @@ export default function AccountsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={LayoutGrid} label="Total Accounts" value={accounts.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={BadgeDollarSign} label="Paid Accounts" value={paid} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
         <StatCard icon={Layers} label="Free Accounts" value={free} iconBg="bg-gradient-to-br from-slate-50 to-slate-100" iconColor="text-slate-500" />

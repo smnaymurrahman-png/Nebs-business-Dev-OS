@@ -166,7 +166,7 @@ export default function ProposalsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={FileText} label="Total Proposals" value={proposals.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={Send} label="Proposal Sent" value={sent} iconBg="bg-gradient-to-br from-blue-50 to-blue-100" iconColor="text-blue-600" />
         <StatCard icon={CheckCircle} label="Completed" value={completed} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />

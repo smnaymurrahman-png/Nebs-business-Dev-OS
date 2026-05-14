@@ -149,7 +149,7 @@ export default function ClientsPage() {
     <div className="space-y-5">
 
       {/* ── Summary cards ── */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard label="Total Clients"    value={stats.total}        icon={Users}     gradient="bg-gradient-to-br from-violet-600 to-indigo-600" iconBg="bg-gradient-to-br from-violet-500 to-indigo-500" />
         <StatCard label="New This Month"   value={stats.newThisMonth} icon={UserCheck}  gradient="bg-gradient-to-br from-emerald-500 to-teal-500"  iconBg="bg-gradient-to-br from-emerald-500 to-teal-500" />
         <StatCard label="Active Platforms" value={stats.platforms}    icon={Layers}    gradient="bg-gradient-to-br from-sky-500 to-blue-500"       iconBg="bg-gradient-to-br from-sky-500 to-blue-500" />

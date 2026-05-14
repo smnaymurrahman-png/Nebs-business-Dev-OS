@@ -139,7 +139,7 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard icon={Users} label="Total Leads" value={leads.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
         <StatCard icon={Flame} label="Hot Leads" value={hotLeads} iconBg="bg-gradient-to-br from-red-50 to-orange-50" iconColor="text-red-500" />
         <StatCard icon={ThumbsUp} label="Interested" value={interested} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
