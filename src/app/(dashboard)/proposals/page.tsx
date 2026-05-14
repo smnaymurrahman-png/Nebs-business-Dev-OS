@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { type ComponentType } from "react";
 import { Modal } from "@/components/shared/Modal";
 import { FormField, inputClass, selectClass } from "@/components/shared/FormField";
 import { ExportButtons } from "@/components/shared/ExportButtons";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatCurrency, formatDate, PROPOSAL_STATUS_LABELS, SERVICE_TYPE_LABELS } from "@/lib/utils";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, FileText, Send, CheckCircle, DollarSign } from "lucide-react";
 
 interface Proposal {
   id: string;
@@ -48,11 +49,38 @@ interface Client {
 
 const SERVICE_TYPES = ["WORDPRESS", "FULL_STACK", "UI_UX", "WEBFLOW", "SHOPIFY", "DIGITAL_MARKETING", "OTHER"];
 const STATUSES = ["PROPOSAL_SENT", "COMMUNICATION_RUNNING", "PAYMENT_PENDING", "PROPOSAL_REJECTED", "ORDER_COMPLETED"];
-
 const emptyForm = {
   clientId: "", platform: "", projectName: "", projectDetails: "", amount: "",
   proposal: "", messageToClient: "", connectIn: "", costing: "", serviceType: "WORDPRESS",
 };
+const AVATAR_COLORS = ["from-violet-500 to-purple-600", "from-indigo-500 to-blue-600", "from-emerald-500 to-teal-600", "from-orange-500 to-red-500", "from-pink-500 to-rose-600"];
+
+function Avatar({ name }: { name: string }) {
+  const color = AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
+  return (
+    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+      {name[0]?.toUpperCase()}
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, label, value, iconBg, iconColor }: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: string | number;
+  iconBg: string;
+  iconColor: string;
+}) {
+  return (
+    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-5">
+      <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
+        <Icon className={`w-5 h-5 ${iconColor}`} />
+      </div>
+      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-3">{label}</p>
+      <p className="text-2xl font-bold text-slate-800 mt-0.5">{value}</p>
+    </div>
+  );
+}
 
 export default function ProposalsPage() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -132,54 +160,81 @@ export default function ProposalsPage() {
     "Follow Up": p.followUp, "Remark": p.remark ?? "", "Date": formatDate(p.createdAt),
   }));
 
+  const sent = proposals.filter((p) => p.currentStatus === "PROPOSAL_SENT").length;
+  const completed = proposals.filter((p) => p.currentStatus === "ORDER_COMPLETED").length;
+  const revenue = proposals.filter((p) => p.currentStatus === "ORDER_COMPLETED").reduce((s, p) => s + p.amount, 0);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search proposals..." className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50/50" />
-        </div>
-        <div className="flex items-center gap-2">
-          <ExportButtons data={exportData} filename="proposals" />
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-all shadow-sm">
-            <Plus className="w-4 h-4" />Add Proposal
-          </button>
-        </div>
+    <div className="space-y-5">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+        <StatCard icon={FileText} label="Total Proposals" value={proposals.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
+        <StatCard icon={Send} label="Proposal Sent" value={sent} iconBg="bg-gradient-to-br from-blue-50 to-blue-100" iconColor="text-blue-600" />
+        <StatCard icon={CheckCircle} label="Completed" value={completed} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
+        <StatCard icon={DollarSign} label="Total Revenue" value={formatCurrency(revenue)} iconBg="bg-gradient-to-br from-amber-50 to-amber-100" iconColor="text-amber-600" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#F1F5F9] flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <h2 className="text-[13px] font-semibold text-slate-700">All Proposals</h2>
+            <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded-full font-semibold">{filtered.length}</span>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search proposals..." className="pl-8 pr-3 py-2 text-[13px] font-medium border border-[#E2E8F0] rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400/40 focus:border-violet-300 bg-white placeholder:text-slate-300 text-slate-700 shadow-sm w-52 transition-all" />
+            </div>
+            <ExportButtons data={exportData} filename="proposals" />
+            <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[13px] font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 shadow-md shadow-violet-200 hover:shadow-lg hover:shadow-violet-300/50 active:scale-[0.98] transition-all">
+              <Plus className="w-4 h-4" />Add Proposal
+            </button>
+          </div>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50/80 border-b border-gray-100">
+          <table className="w-full">
+            <thead className="bg-[#F8FAFC] border-b border-[#F1F5F9]">
               <tr>
                 {["Client", "Project", "Platform", "Service", "Amount", "Costing", "Status", "Follow Up", "Date", ""].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-medium text-gray-600 whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={10} className="px-4 py-10 text-center text-gray-400">No proposals found</td></tr>
+                <tr><td colSpan={10}>
+                  <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                      <FileText className="w-6 h-6 text-slate-300" />
+                    </div>
+                    <p className="text-sm font-medium text-slate-500">No proposals yet</p>
+                    <p className="text-xs mt-1">Add your first proposal to get started</p>
+                  </div>
+                </td></tr>
               ) : (
                 filtered.map((p) => (
-                  <tr key={p.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <p className="font-medium">{p.client.name}</p>
-                      <p className="text-xs text-gray-500 font-mono">{p.client.clientId}</p>
+                  <tr key={p.id} className="group border-b border-[#F1F5F9] hover:bg-violet-50/40 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={p.client.name} />
+                        <div>
+                          <p className="text-[13px] font-semibold text-slate-700">{p.client.name}</p>
+                          <p className="text-[11px] text-slate-400 font-mono">{p.client.clientId}</p>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-4 py-3 font-medium">{p.projectName}</td>
-                    <td className="px-4 py-3 text-gray-600">{p.platform}</td>
-                    <td className="px-4 py-3 text-gray-600">{SERVICE_TYPE_LABELS[p.serviceType]}</td>
-                    <td className="px-4 py-3 font-semibold">{formatCurrency(p.amount)}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatCurrency(p.costing)}</td>
-                    <td className="px-4 py-3"><StatusBadge status={p.currentStatus} label={PROPOSAL_STATUS_LABELS[p.currentStatus] ?? p.currentStatus} /></td>
-                    <td className="px-4 py-3 text-center">{p.followUp > 0 ? `FU ${p.followUp}` : "-"}</td>
-                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatDate(p.createdAt)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => openUpdate(p)} className="px-2.5 py-1 text-xs font-semibold bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100">Update</button>
-                        <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => del(p.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <td className="px-5 py-3.5 text-[13px] font-medium text-slate-700">{p.projectName}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{p.platform}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{SERVICE_TYPE_LABELS[p.serviceType]}</td>
+                    <td className="px-5 py-3.5 text-[13px] font-semibold text-slate-700">{formatCurrency(p.amount)}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{formatCurrency(p.costing)}</td>
+                    <td className="px-5 py-3.5"><StatusBadge status={p.currentStatus} label={PROPOSAL_STATUS_LABELS[p.currentStatus] ?? p.currentStatus} /></td>
+                    <td className="px-5 py-3.5 text-[13px] text-center text-slate-500">{p.followUp > 0 ? `FU ${p.followUp}` : <span className="text-slate-300">—</span>}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-slate-400 whitespace-nowrap">{formatDate(p.createdAt)}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => openUpdate(p)} className="px-2.5 py-1 text-[11px] font-semibold bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">Update</button>
+                        <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => del(p.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>
@@ -190,14 +245,13 @@ export default function ProposalsPage() {
         </div>
       </div>
 
-      {/* Add/Edit Modal */}
       <Modal isOpen={modal === "add" || modal === "edit"} onClose={() => setModal(null)} title={modal === "add" ? "Add Proposal" : "Edit Proposal"} size="xl">
         {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-xl font-medium">{error}</p>}
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Client ID" required>
             <div className="flex gap-2">
               <input value={form.clientId} onChange={(e) => setForm({ ...form, clientId: e.target.value })} className={inputClass()} placeholder="CLT-XXXX-XXXX" />
-              <button onClick={() => lookupClient(form.clientId)} className="px-3 py-2 text-xs font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl whitespace-nowrap">Lookup</button>
+              <button onClick={() => lookupClient(form.clientId)} className="px-3 py-2 text-xs font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl whitespace-nowrap shadow-sm">Lookup</button>
             </div>
           </FormField>
           {clientInfo && (
@@ -237,14 +291,13 @@ export default function ProposalsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600">Cancel</button>
-          <button onClick={save} disabled={loading} className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-600">Cancel</button>
+          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm shadow-violet-200">
             {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </Modal>
 
-      {/* Update Status Modal */}
       <Modal isOpen={modal === "update"} onClose={() => setModal(null)} title="Update Proposal Status">
         <div className="space-y-4">
           <FormField label="Current Status">
@@ -262,8 +315,8 @@ export default function ProposalsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600">Cancel</button>
-          <button onClick={saveUpdate} disabled={loading} className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-600">Cancel</button>
+          <button onClick={saveUpdate} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm shadow-violet-200">
             {loading ? "Saving..." : "Update"}
           </button>
         </div>
