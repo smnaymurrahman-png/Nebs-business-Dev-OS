@@ -9,10 +9,11 @@ export function StatusBadge({ status, label }: StatusBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-        STATUS_COLORS[status] ?? "bg-gray-100 text-gray-800"
+        "inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-semibold gap-1.5",
+        STATUS_COLORS[status] ?? "bg-slate-100 text-slate-600"
       )}
     >
+      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60 shrink-0" />
       {label}
     </span>
   );

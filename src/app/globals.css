@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
   --font-sans: var(--font-poppins);
+
+  --color-brand-from: #7C3AED;
+  --color-brand-to: #4F46E5;
+  --color-muted: #64748B;
+  --color-border: #E2E8F0;
 }
 
 @theme inline {
@@ -12,28 +17,23 @@
   --font-sans: var(--font-poppins);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+html {
   font-family: var(--font-poppins), "Poppins", system-ui, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+body {
+  background: linear-gradient(145deg, #F8FAFC 0%, #F4F7FB 50%, #EEF2FF 100%);
+  background-attachment: fixed;
+  color: var(--foreground);
+  min-height: 100vh;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #c4b5fd;
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed;
-}
+/* Premium scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C4B5FD; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+
+/* Smooth transitions globally */
+* { box-sizing: border-box; }
+button, a { transition: all 0.15s ease; }
