@@ -77,7 +77,7 @@ export const PRIORITY_LABELS: Record<string, string> = {
 };
 
 export const STATUS_COLORS: Record<string, string> = {
-  PROPOSAL_SENT: "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100",
+  PROPOSAL_SENT: "bg-blue-50 text-blue-700 ring-1 ring-blue-100",
   COMMUNICATION_RUNNING: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
   PAYMENT_PENDING: "bg-orange-50 text-orange-700 ring-1 ring-orange-100",
   PROPOSAL_REJECTED: "bg-red-50 text-red-600 ring-1 ring-red-100",
@@ -86,7 +86,7 @@ export const STATUS_COLORS: Record<string, string> = {
   NOT_INTERESTED: "bg-red-50 text-red-600 ring-1 ring-red-100",
   NO_RESPONSE: "bg-gray-100 text-gray-600 ring-1 ring-gray-200",
   FOLLOW_UP: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
-  PENDING_DECISION: "bg-violet-50 text-violet-700 ring-1 ring-violet-100",
+  PENDING_DECISION: "bg-blue-50 text-blue-700 ring-1 ring-blue-100",
   COLD: "bg-sky-50 text-sky-700 ring-1 ring-sky-100",
   HOT: "bg-red-50 text-red-600 ring-1 ring-red-100",
   WARM: "bg-orange-50 text-orange-700 ring-1 ring-orange-100",

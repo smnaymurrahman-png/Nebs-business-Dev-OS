@@ -22,68 +22,53 @@ interface Client {
 
 const empty = { name: "", email: "", phone: "", country: "", businessName: "", platform: "" };
 
-/* ─── Stat Card ─────────────────────────────────────────────────── */
 function StatCard({
-  label, value, icon: Icon, gradient, iconBg,
+  label, value, icon: Icon, iconBg, iconColor,
 }: {
   label: string; value: string | number;
-  icon: React.ElementType; gradient: string; iconBg: string;
+  icon: React.ElementType; iconBg: string; iconColor: string;
 }) {
   return (
-    <div className={`relative overflow-hidden bg-white rounded-2xl border border-[#E2E8F0] p-4 shadow-sm`}>
-      <div className={`absolute inset-0 opacity-[0.03] ${gradient}`} />
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-          <p className="text-2xl font-bold text-slate-900 leading-none">{value}</p>
-        </div>
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${iconBg}`}>
-          <Icon className="w-4 h-4 text-white" />
-        </div>
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${iconBg}`}>
+        <Icon className={`w-4 h-4 ${iconColor}`} />
       </div>
+      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-0.5">{label}</p>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
     </div>
   );
 }
 
-/* ─── Avatar initials ────────────────────────────────────────────── */
 function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "xs" }) {
-  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
   const colors = [
-    "from-violet-500 to-indigo-500",
-    "from-pink-500 to-rose-500",
-    "from-emerald-500 to-teal-500",
-    "from-amber-500 to-orange-500",
-    "from-sky-500 to-blue-500",
+    "bg-blue-500", "bg-pink-500", "bg-emerald-500", "bg-amber-500", "bg-sky-500",
   ];
   const color = colors[name.charCodeAt(0) % colors.length];
-  const dim = size === "xs" ? "w-6 h-6 text-[9px]" : "w-8 h-8 text-xs";
+  const dim = size === "xs" ? "w-6 h-6 text-[9px]" : "w-7 h-7 text-[11px]";
   return (
-    <div className={`${dim} rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white font-bold shrink-0`}>
-      {initials}
+    <div className={`${dim} rounded-md ${color} flex items-center justify-center text-white font-bold shrink-0`}>
+      {name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
     </div>
   );
 }
 
-/* ─── Platform Badge ─────────────────────────────────────────────── */
 function PlatformBadge({ platform }: { platform: string }) {
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
       {platform}
     </span>
   );
 }
 
-/* ─── Country Badge ──────────────────────────────────────────────── */
 function CountryBadge({ country }: { country: string }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-500">
-      <Globe className="w-3 h-3 text-slate-400" />
+    <span className="inline-flex items-center gap-1 text-[12px] text-gray-500">
+      <Globe className="w-3 h-3 text-gray-400" />
       {country}
     </span>
   );
 }
 
-/* ─── Page ───────────────────────────────────────────────────────── */
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState("");
@@ -98,7 +83,6 @@ export default function ClientsPage() {
 
   useEffect(() => { load(); }, []);
 
-  /* Stat computations */
   const stats = useMemo(() => {
     const now = new Date();
     const newThisMonth = clients.filter((c) => {
@@ -147,33 +131,28 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-5">
-
-      {/* ── Summary cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard label="Total Clients"    value={stats.total}        icon={Users}     gradient="bg-gradient-to-br from-violet-600 to-indigo-600" iconBg="bg-gradient-to-br from-violet-500 to-indigo-500" />
-        <StatCard label="New This Month"   value={stats.newThisMonth} icon={UserCheck}  gradient="bg-gradient-to-br from-emerald-500 to-teal-500"  iconBg="bg-gradient-to-br from-emerald-500 to-teal-500" />
-        <StatCard label="Active Platforms" value={stats.platforms}    icon={Layers}    gradient="bg-gradient-to-br from-sky-500 to-blue-500"       iconBg="bg-gradient-to-br from-sky-500 to-blue-500" />
-        <StatCard label="Added by Team"    value={stats.team}         icon={Globe}     gradient="bg-gradient-to-br from-amber-400 to-orange-500"   iconBg="bg-gradient-to-br from-amber-400 to-orange-500" />
+        <StatCard label="Total Clients"    value={stats.total}        icon={Users}     iconBg="bg-blue-50"    iconColor="text-blue-600" />
+        <StatCard label="New This Month"   value={stats.newThisMonth} icon={UserCheck}  iconBg="bg-emerald-50" iconColor="text-emerald-600" />
+        <StatCard label="Active Platforms" value={stats.platforms}    icon={Layers}    iconBg="bg-sky-50"     iconColor="text-sky-600" />
+        <StatCard label="Added by Team"    value={stats.team}         icon={Globe}     iconBg="bg-amber-50"   iconColor="text-amber-600" />
       </div>
 
-      {/* ── Toolbar ── */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search clients…"
-            className="w-full pl-10 pr-4 py-2.5 text-sm font-medium bg-white border border-[#E2E8F0] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400/40 focus:border-violet-300 text-slate-700 placeholder:text-slate-400 transition-all"
+            className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 text-gray-700 placeholder:text-gray-400 transition-all"
           />
         </div>
-
         <div className="flex items-center gap-2 shrink-0">
           <ExportButtons data={exportData} filename="clients" />
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 shadow-md shadow-violet-200 hover:shadow-lg hover:shadow-violet-300/50 active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-[13px] font-semibold rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all"
           >
             <Plus className="w-4 h-4" />
             Add Client
@@ -181,18 +160,16 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
-        {/* Card header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E2E8F0]">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-semibold text-slate-700">All Clients</span>
-            <span className="px-2 py-0.5 text-[11px] font-bold bg-violet-50 text-violet-600 rounded-full border border-violet-100">
+            <span className="text-[13px] font-semibold text-gray-700">All Clients</span>
+            <span className="px-2 py-0.5 text-[11px] font-bold bg-gray-100 text-gray-500 rounded-full">
               {filtered.length}
             </span>
           </div>
           {search && (
-            <button onClick={() => setSearch("")} className="text-[11px] text-slate-400 hover:text-slate-600 font-medium">
+            <button onClick={() => setSearch("")} className="text-[11px] text-gray-400 hover:text-gray-600 font-medium">
               Clear filter
             </button>
           )}
@@ -201,18 +178,9 @@ export default function ClientsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-[#E2E8F0]">
-                {[
-                  { label: "Client", w: "" },
-                  { label: "Contact", w: "" },
-                  { label: "Country", w: "" },
-                  { label: "Business", w: "" },
-                  { label: "Platform", w: "" },
-                  { label: "Added By", w: "" },
-                  { label: "Date", w: "" },
-                  { label: "", w: "w-16" },
-                ].map(({ label, w }) => (
-                  <th key={label} className={`px-5 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap ${w}`}>
+              <tr className="bg-gray-50 border-b border-gray-100">
+                {["Client", "Contact", "Country", "Business", "Platform", "Added By", "Date", ""].map((label) => (
+                  <th key={label} className="px-5 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">
                     {label}
                   </th>
                 ))}
@@ -221,15 +189,15 @@ export default function ClientsPage() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-20 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-slate-400" />
+                  <td colSpan={8} className="py-16 text-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-gray-300" />
                       </div>
-                      <p className="text-sm font-semibold text-slate-500">
+                      <p className="text-[13px] font-medium text-gray-500">
                         {search ? "No clients match your search" : "No clients yet"}
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-[12px] text-gray-400">
                         {search ? "Try a different keyword" : "Add your first client to get started"}
                       </p>
                     </div>
@@ -239,70 +207,43 @@ export default function ClientsPage() {
                 filtered.map((c, i) => (
                   <tr
                     key={c.id}
-                    className={`group transition-colors hover:bg-violet-50/40 ${i !== filtered.length - 1 ? "border-b border-[#F1F5F9]" : ""}`}
+                    className={`group transition-colors hover:bg-blue-50/40 ${i !== filtered.length - 1 ? "border-b border-gray-100" : ""}`}
                   >
-                    {/* Client identity */}
                     <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
                         <Avatar name={c.name} />
                         <div className="min-w-0">
-                          <p className="text-[13px] font-semibold text-slate-800 truncate">{c.name}</p>
-                          <p className="text-[11px] font-mono text-violet-500 font-medium">{c.clientId}</p>
+                          <p className="text-[13px] font-semibold text-gray-800 truncate">{c.name}</p>
+                          <p className="text-[11px] font-mono text-blue-500 font-medium">{c.clientId}</p>
                         </div>
                       </div>
                     </td>
-
-                    {/* Contact */}
                     <td className="px-5 py-3.5">
-                      <p className="text-[12px] font-medium text-slate-600 truncate max-w-[160px]">{c.email}</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{c.phone}</p>
+                      <p className="text-[12px] font-medium text-gray-600 truncate max-w-[160px]">{c.email}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">{c.phone}</p>
                     </td>
-
-                    {/* Country */}
+                    <td className="px-5 py-3.5"><CountryBadge country={c.country} /></td>
                     <td className="px-5 py-3.5">
-                      <CountryBadge country={c.country} />
+                      <p className="text-[13px] font-medium text-gray-600 truncate max-w-[140px]">{c.businessName}</p>
                     </td>
-
-                    {/* Business */}
-                    <td className="px-5 py-3.5">
-                      <p className="text-[13px] font-medium text-slate-600 truncate max-w-[140px]">{c.businessName}</p>
-                    </td>
-
-                    {/* Platform */}
-                    <td className="px-5 py-3.5">
-                      <PlatformBadge platform={c.platform} />
-                    </td>
-
-                    {/* Added by */}
+                    <td className="px-5 py-3.5"><PlatformBadge platform={c.platform} /></td>
                     <td className="px-5 py-3.5">
                       {c.user?.name && (
                         <div className="flex items-center gap-2">
                           <Avatar name={c.user.name} size="xs" />
-                          <span className="text-[12px] font-medium text-slate-500 truncate">{c.user.name}</span>
+                          <span className="text-[12px] font-medium text-gray-500 truncate">{c.user.name}</span>
                         </div>
                       )}
                     </td>
-
-                    {/* Date */}
                     <td className="px-5 py-3.5 whitespace-nowrap">
-                      <p className="text-[12px] font-medium text-slate-500">{formatDate(c.createdAt)}</p>
+                      <p className="text-[12px] text-gray-400">{formatDate(c.createdAt)}</p>
                     </td>
-
-                    {/* Actions */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => openEdit(c)}
-                          title="Edit"
-                          className="p-1.5 rounded-lg bg-white hover:bg-violet-50 text-slate-400 hover:text-violet-600 border border-transparent hover:border-violet-100 shadow-sm transition-all"
-                        >
+                        <button onClick={() => openEdit(c)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-all">
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
-                        <button
-                          onClick={() => del(c.id)}
-                          title="Delete"
-                          className="p-1.5 rounded-lg bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 border border-transparent hover:border-red-100 shadow-sm transition-all"
-                        >
+                        <button onClick={() => del(c.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -315,10 +256,9 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      {/* ── Modal ── */}
       <Modal isOpen={!!modal} onClose={() => setModal(null)} title={modal === "add" ? "Add New Client" : "Edit Client"} size="lg">
         {error && (
-          <div className="mb-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 p-3 rounded-xl font-medium">
+          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg font-medium">
             {error}
           </div>
         )}
@@ -343,14 +283,10 @@ export default function ClientsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-semibold border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-500 transition-all">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500 transition-all">
             Cancel
           </button>
-          <button
-            onClick={save}
-            disabled={loading}
-            className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 shadow-md shadow-violet-200 active:scale-[0.98] transition-all"
-          >
+          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60 active:scale-[0.98] transition-all">
             {loading ? "Saving…" : modal === "add" ? "Add Client" : "Save Changes"}
           </button>
         </div>

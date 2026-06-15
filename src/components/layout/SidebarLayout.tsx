@@ -12,7 +12,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-[2px] lg:hidden"
+          className="fixed inset-0 z-40 bg-gray-900/40 backdrop-blur-[2px] lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}

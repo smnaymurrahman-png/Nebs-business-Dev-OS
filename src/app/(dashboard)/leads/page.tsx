@@ -6,7 +6,7 @@ import { Modal } from "@/components/shared/Modal";
 import { FormField, inputClass, selectClass } from "@/components/shared/FormField";
 import { ExportButtons } from "@/components/shared/ExportButtons";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { formatDate, LEAD_STATUS_LABELS, STATUS_COLORS } from "@/lib/utils";
+import { formatDate, LEAD_STATUS_LABELS } from "@/lib/utils";
 import { Plus, Pencil, Trash2, Search, Users, Flame, ThumbsUp, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -35,18 +35,18 @@ const CONNECTION_LABELS: Record<string, string> = { BY_PHONE: "By Phone", BY_EMA
 const LEAD_TYPE_STYLES: Record<string, string> = {
   HOT: "bg-red-50 text-red-700 ring-1 ring-red-100",
   WARM: "bg-orange-50 text-orange-700 ring-1 ring-orange-100",
-  COLD: "bg-blue-50 text-blue-700 ring-1 ring-blue-100",
+  COLD: "bg-sky-50 text-sky-700 ring-1 ring-sky-100",
 };
 
 const emptyForm = { fullName: "", emailAddress: "", phoneNumber: "", website: "", businessName: "", businessDetails: "", leadType: "COLD", leadFrom: "", isPaid: "false" };
 const emptyUpdate = { connection: "", leadStatus: "INTERESTED", lastUpdate: "" };
 
-const AVATAR_COLORS = ["from-violet-500 to-purple-600", "from-indigo-500 to-blue-600", "from-emerald-500 to-teal-600", "from-orange-500 to-red-500", "from-pink-500 to-rose-600"];
+const AVATAR_COLORS = ["bg-blue-500", "bg-indigo-500", "bg-emerald-500", "bg-orange-500", "bg-pink-500"];
 
 function Avatar({ name }: { name: string }) {
   const color = AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
   return (
-    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+    <div className={`w-7 h-7 rounded-md ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
       {name[0]?.toUpperCase()}
     </div>
   );
@@ -60,12 +60,12 @@ function StatCard({ icon: Icon, label, value, iconBg, iconColor }: {
   iconColor: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-5">
-      <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} />
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center`}>
+        <Icon className={`w-4 h-4 ${iconColor}`} />
       </div>
-      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-3">{label}</p>
-      <p className="text-2xl font-bold text-slate-800 mt-0.5">{value}</p>
+      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-3">{label}</p>
+      <p className="text-2xl font-bold text-gray-900 mt-0.5">{value}</p>
     </div>
   );
 }
@@ -140,76 +140,76 @@ export default function LeadsPage() {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard icon={Users} label="Total Leads" value={leads.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
-        <StatCard icon={Flame} label="Hot Leads" value={hotLeads} iconBg="bg-gradient-to-br from-red-50 to-orange-50" iconColor="text-red-500" />
-        <StatCard icon={ThumbsUp} label="Interested" value={interested} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
-        <StatCard icon={Clock} label="Follow Up" value={followUp} iconBg="bg-gradient-to-br from-amber-50 to-amber-100" iconColor="text-amber-600" />
+        <StatCard icon={Users}    label="Total Leads" value={leads.length} iconBg="bg-blue-50"    iconColor="text-blue-600" />
+        <StatCard icon={Flame}    label="Hot Leads"   value={hotLeads}    iconBg="bg-red-50"     iconColor="text-red-500" />
+        <StatCard icon={ThumbsUp} label="Interested"  value={interested}  iconBg="bg-emerald-50" iconColor="text-emerald-600" />
+        <StatCard icon={Clock}    label="Follow Up"   value={followUp}    iconBg="bg-amber-50"   iconColor="text-amber-600" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#F1F5F9] flex items-center justify-between gap-4 flex-wrap">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <h2 className="text-[13px] font-semibold text-slate-700">All Leads</h2>
-            <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded-full font-semibold">{filtered.length}</span>
+            <h2 className="text-[13px] font-semibold text-gray-700">All Leads</h2>
+            <span className="bg-gray-100 text-gray-500 text-[11px] px-2 py-0.5 rounded-full font-semibold">{filtered.length}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..." className="pl-8 pr-3 py-2 text-[13px] font-medium border border-[#E2E8F0] rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400/40 focus:border-violet-300 bg-white placeholder:text-slate-300 text-slate-700 shadow-sm w-52 transition-all" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..." className="pl-8 pr-3 py-2 text-[13px] border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 bg-white placeholder:text-gray-300 text-gray-700 w-52 transition-all" />
             </div>
             <ExportButtons data={exportData} filename="leads" />
-            <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[13px] font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 shadow-md shadow-violet-200 hover:shadow-lg hover:shadow-violet-300/50 active:scale-[0.98] transition-all">
+            <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-[13px] font-semibold rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all">
               <Plus className="w-4 h-4" />Add Lead
             </button>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#F8FAFC] border-b border-[#F1F5F9]">
+            <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 {["Name", "Email", "Phone", "Business", "Lead Type", "Source", "Connection", "Status", "Last Update", "Date", ""].map((h) => (
-                  <th key={h} className="px-5 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr><td colSpan={11}>
-                  <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                      <Users className="w-6 h-6 text-slate-300" />
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
+                      <Users className="w-5 h-5 text-gray-300" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">No leads yet</p>
-                    <p className="text-xs mt-1">Add your first lead to get started</p>
+                    <p className="text-[13px] font-medium text-gray-500">No leads yet</p>
+                    <p className="text-[12px] mt-1">Add your first lead to get started</p>
                   </div>
                 </td></tr>
               ) : (
                 filtered.map((l) => (
-                  <tr key={l.id} className="group border-b border-[#F1F5F9] hover:bg-violet-50/40 transition-colors">
+                  <tr key={l.id} className="group border-b border-gray-100 hover:bg-blue-50/30 transition-colors">
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2.5">
                         <Avatar name={l.fullName} />
-                        <p className="text-[13px] font-semibold text-slate-700">{l.fullName}</p>
+                        <p className="text-[13px] font-semibold text-gray-700">{l.fullName}</p>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{l.emailAddress}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{l.phoneNumber}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-600">{l.businessName}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{l.emailAddress}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{l.phoneNumber}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-600">{l.businessName}</td>
                     <td className="px-5 py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-semibold ${LEAD_TYPE_STYLES[l.leadType] ?? "bg-slate-100 text-slate-600"}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${LEAD_TYPE_STYLES[l.leadType] ?? "bg-gray-100 text-gray-600"}`}>
                         {l.leadType}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{l.leadFrom}</td>
-                    <td className="px-5 py-3.5 text-[12px] text-slate-500">{l.connection ? CONNECTION_LABELS[l.connection] : <span className="text-slate-300">—</span>}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{l.leadFrom}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-500">{l.connection ? CONNECTION_LABELS[l.connection] : <span className="text-gray-300">—</span>}</td>
                     <td className="px-5 py-3.5"><StatusBadge status={l.leadStatus} label={LEAD_STATUS_LABELS[l.leadStatus] ?? l.leadStatus} /></td>
-                    <td className="px-5 py-3.5 text-[12px] text-slate-400 max-w-[150px] truncate">{l.lastUpdate || <span className="text-slate-300">—</span>}</td>
-                    <td className="px-5 py-3.5 text-[12px] text-slate-400 whitespace-nowrap">{formatDate(l.createdAt)}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-400 max-w-[150px] truncate">{l.lastUpdate || <span className="text-gray-300">—</span>}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-400 whitespace-nowrap">{formatDate(l.createdAt)}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openUpdate(l)} className="px-2.5 py-1 text-[11px] font-semibold bg-violet-50 text-violet-600 rounded-lg hover:bg-violet-100 transition-colors">Update</button>
-                        <button onClick={() => openEdit(l)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => del(l.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => openUpdate(l)} className="px-2.5 py-1 text-[11px] font-semibold bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">Update</button>
+                        <button onClick={() => openEdit(l)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => del(l.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>
@@ -221,7 +221,7 @@ export default function LeadsPage() {
       </div>
 
       <Modal isOpen={modal === "add" || modal === "edit"} onClose={() => setModal(null)} title={modal === "add" ? "Add Lead" : "Edit Lead"} size="lg">
-        {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-xl font-medium">{error}</p>}
+        {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-lg font-medium">{error}</p>}
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Full Name" required>
             <input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className={inputClass()} placeholder="John Doe" />
@@ -256,8 +256,8 @@ export default function LeadsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-600">Cancel</button>
-          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm shadow-violet-200">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">Cancel</button>
+          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-all">
             {loading ? "Saving..." : "Save"}
           </button>
         </div>
@@ -278,7 +278,7 @@ export default function LeadsPage() {
                   key={s}
                   type="button"
                   onClick={() => setUpdateForm({ ...updateForm, leadStatus: s })}
-                  className={cn("px-3 py-2 text-xs rounded-xl border transition-colors text-left", updateForm.leadStatus === s ? "border-violet-400 bg-violet-50 text-violet-700" : "border-[#E2E8F0] hover:border-slate-300")}
+                  className={cn("px-3 py-2 text-xs rounded-lg border transition-colors text-left", updateForm.leadStatus === s ? "border-blue-400 bg-blue-50 text-blue-700" : "border-gray-200 hover:border-gray-300")}
                 >
                   <StatusBadge status={s} label={LEAD_STATUS_LABELS[s] ?? s} />
                 </button>
@@ -290,8 +290,8 @@ export default function LeadsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-600">Cancel</button>
-          <button onClick={saveUpdate} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm shadow-violet-200">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">Cancel</button>
+          <button onClick={saveUpdate} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-all">
             {loading ? "Saving..." : "Update"}
           </button>
         </div>

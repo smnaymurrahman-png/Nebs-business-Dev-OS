@@ -8,7 +8,7 @@ interface ExportButtonsProps {
   filename: string;
 }
 
-const btnClass = "flex items-center gap-1.5 px-3 py-2.5 text-[12px] font-semibold text-slate-500 bg-white border border-[#E2E8F0] rounded-xl hover:bg-slate-50 hover:text-slate-700 hover:border-slate-300 shadow-sm transition-all";
+const btnClass = "flex items-center gap-1.5 px-3 py-2 text-[12px] font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-all";
 
 export function ExportButtons({ data, filename }: ExportButtonsProps) {
   return (

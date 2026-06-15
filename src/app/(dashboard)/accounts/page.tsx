@@ -46,12 +46,12 @@ function StatCard({ icon: Icon, label, value, iconBg, iconColor }: {
   iconColor: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-5">
-      <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} />
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center`}>
+        <Icon className={`w-4 h-4 ${iconColor}`} />
       </div>
-      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-3">{label}</p>
-      <p className="text-2xl font-bold text-slate-800 mt-0.5">{value}</p>
+      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-3">{label}</p>
+      <p className="text-2xl font-bold text-gray-900 mt-0.5">{value}</p>
     </div>
   );
 }
@@ -110,78 +110,78 @@ export default function AccountsPage() {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard icon={LayoutGrid} label="Total Accounts" value={accounts.length} iconBg="bg-gradient-to-br from-violet-50 to-violet-100" iconColor="text-violet-600" />
-        <StatCard icon={BadgeDollarSign} label="Paid Accounts" value={paid} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-600" />
-        <StatCard icon={Layers} label="Free Accounts" value={free} iconBg="bg-gradient-to-br from-slate-50 to-slate-100" iconColor="text-slate-500" />
-        <StatCard icon={TrendingUp} label="Total Value" value={formatCurrency(totalValue)} iconBg="bg-gradient-to-br from-amber-50 to-amber-100" iconColor="text-amber-600" />
+        <StatCard icon={LayoutGrid}      label="Total Accounts" value={accounts.length}        iconBg="bg-blue-50"    iconColor="text-blue-600" />
+        <StatCard icon={BadgeDollarSign} label="Paid Accounts"  value={paid}                   iconBg="bg-emerald-50" iconColor="text-emerald-600" />
+        <StatCard icon={Layers}          label="Free Accounts"  value={free}                   iconBg="bg-gray-100"   iconColor="text-gray-500" />
+        <StatCard icon={TrendingUp}      label="Total Value"    value={formatCurrency(totalValue)} iconBg="bg-amber-50" iconColor="text-amber-600" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#F1F5F9] flex items-center justify-between gap-4 flex-wrap">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <h2 className="text-[13px] font-semibold text-slate-700">All Accounts</h2>
-            <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded-full font-semibold">{filtered.length}</span>
+            <h2 className="text-[13px] font-semibold text-gray-700">All Accounts</h2>
+            <span className="bg-gray-100 text-gray-500 text-[11px] px-2 py-0.5 rounded-full font-semibold">{filtered.length}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search accounts..." className="pl-8 pr-3 py-2 text-[13px] font-medium border border-[#E2E8F0] rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400/40 focus:border-violet-300 bg-white placeholder:text-slate-300 text-slate-700 shadow-sm w-52 transition-all" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search accounts..." className="pl-8 pr-3 py-2 text-[13px] border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 bg-white placeholder:text-gray-300 text-gray-700 w-52 transition-all" />
             </div>
             <ExportButtons data={exportData} filename="accounts" />
-            <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[13px] font-semibold rounded-xl hover:from-violet-700 hover:to-indigo-700 shadow-md shadow-violet-200 hover:shadow-lg hover:shadow-violet-300/50 active:scale-[0.98] transition-all">
+            <button onClick={openAdd} className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-[13px] font-semibold rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all">
               <Plus className="w-4 h-4" />Add Account
             </button>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#F8FAFC] border-b border-[#F1F5F9]">
+            <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 {["Platform", "Profile", "Email", "Phone", "Password", "Profile Type", "Type", "Sub", "Amount", "Assigned To", "Date", ""].map((h) => (
-                  <th key={h} className="px-5 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr><td colSpan={12}>
-                  <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                      <LayoutGrid className="w-6 h-6 text-slate-300" />
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
+                      <LayoutGrid className="w-5 h-5 text-gray-300" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">No accounts yet</p>
-                    <p className="text-xs mt-1">Add your first account to get started</p>
+                    <p className="text-[13px] font-medium text-gray-500">No accounts yet</p>
+                    <p className="text-[12px] mt-1">Add your first account to get started</p>
                   </div>
                 </td></tr>
               ) : (
                 filtered.map((a) => (
-                  <tr key={a.id} className="group border-b border-[#F1F5F9] hover:bg-violet-50/40 transition-colors">
-                    <td className="px-5 py-3.5 text-[13px] font-semibold text-slate-700">{a.platformName}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-600">{a.profileName}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{a.emailAddress}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{a.phoneNumber}</td>
+                  <tr key={a.id} className="group border-b border-gray-100 hover:bg-blue-50/30 transition-colors">
+                    <td className="px-5 py-3.5 text-[13px] font-semibold text-gray-700">{a.platformName}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-600">{a.profileName}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{a.emailAddress}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{a.phoneNumber}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1">
-                        <span className="font-mono text-[12px] text-slate-600">{showPw[a.id] ? a.password : "••••••••"}</span>
-                        <button onClick={() => setShowPw((p) => ({ ...p, [a.id]: !p[a.id] }))} className="p-1 text-slate-400 hover:text-slate-600 transition-colors">
+                        <span className="font-mono text-[12px] text-gray-600">{showPw[a.id] ? a.password : "••••••••"}</span>
+                        <button onClick={() => setShowPw((p) => ({ ...p, [a.id]: !p[a.id] }))} className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
                           {showPw[a.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </td>
                     <td className="px-5 py-3.5"><StatusBadge status={a.profileType} label={PROFILE_TYPE_LABELS[a.profileType] ?? a.profileType} /></td>
                     <td className="px-5 py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-semibold ${a.accountType === "PAID" ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100" : "bg-slate-100 text-slate-600"}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${a.accountType === "PAID" ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100" : "bg-gray-100 text-gray-600"}`}>
                         {a.accountType}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-[12px] text-slate-500">{a.subscriptionType}</td>
-                    <td className="px-5 py-3.5 text-[13px] font-semibold text-slate-700">{formatCurrency(a.amount)}</td>
-                    <td className="px-5 py-3.5 text-[13px] text-slate-500">{a.assignedPerson || <span className="text-slate-300">—</span>}</td>
-                    <td className="px-5 py-3.5 text-[12px] text-slate-400 whitespace-nowrap">{formatDate(a.createdAt)}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-500">{a.subscriptionType}</td>
+                    <td className="px-5 py-3.5 text-[13px] font-semibold text-gray-700">{formatCurrency(a.amount)}</td>
+                    <td className="px-5 py-3.5 text-[13px] text-gray-500">{a.assignedPerson || <span className="text-gray-300">—</span>}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-400 whitespace-nowrap">{formatDate(a.createdAt)}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => openEdit(a)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => del(a.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => openEdit(a)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => del(a.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>
@@ -193,7 +193,7 @@ export default function AccountsPage() {
       </div>
 
       <Modal isOpen={!!modal} onClose={() => setModal(null)} title={modal === "add" ? "Add Account" : "Edit Account"} size="xl">
-        {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-xl font-medium">{error}</p>}
+        {error && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-lg font-medium">{error}</p>}
         <div className="grid grid-cols-2 gap-4">
           {[["Platform Name", "platformName", "Upwork, Fiverr..."], ["Profile Name", "profileName", "Profile display name"], ["Email Address", "emailAddress", "account@email.com"], ["Password", "password", "••••••••"], ["Phone Number", "phoneNumber", "+1 234 567 890"], ["Special Question", "specialQuestion", "Security question"], ["Special Answer", "specialAnswer", "Answer"], ["Assigned Person", "assignedPerson", "Name"], ["Assigned Device", "assignedDevice", "Device name"], ["Assigned IP", "assignedIp", "IP address"], ["Additional Device", "additionalDevice", "Additional device"]].map(([label, key, ph]) => (
             <FormField key={key} label={label}>
@@ -220,8 +220,8 @@ export default function AccountsPage() {
           </FormField>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-[#E2E8F0] rounded-xl hover:bg-slate-50 text-slate-600">Cancel</button>
-          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 transition-all shadow-sm shadow-violet-200">
+          <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">Cancel</button>
+          <button onClick={save} disabled={loading} className="px-5 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-all">
             {loading ? "Saving..." : "Save"}
           </button>
         </div>

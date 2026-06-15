@@ -45,8 +45,8 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  SUPER_ADMIN: "bg-violet-100 text-violet-700",
-  ADMIN: "bg-indigo-100 text-indigo-700",
+  SUPER_ADMIN: "bg-blue-100 text-blue-700",
+  ADMIN: "bg-sky-100 text-sky-700",
   USER: "bg-gray-100 text-gray-600",
 };
 
@@ -69,22 +69,22 @@ function NavLink({
       href={href}
       onClick={onClose}
       className={cn(
-        "group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
+        "group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
         active
-          ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-200/60"
-          : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+          ? "bg-blue-600 text-white"
+          : "text-gray-500 hover:bg-gray-100 hover:text-gray-800"
       )}
     >
-      <Icon className={cn("w-[17px] h-[17px] shrink-0", active ? "text-white" : "text-slate-400 group-hover:text-slate-600")} />
+      <Icon className={cn("w-4 h-4 shrink-0", active ? "text-white" : "text-gray-400 group-hover:text-gray-600")} />
       <span className="truncate">{label}</span>
-      {active && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-70" />}
+      {active && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-60" />}
     </Link>
   );
 }
 
 function SectionLabel({ label }: { label: string }) {
   return (
-    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.12em] px-3 pt-5 pb-1.5">
+    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.1em] px-3 pt-5 pb-1">
       {label}
     </p>
   );
@@ -104,31 +104,27 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex flex-col w-[260px] min-h-screen bg-white border-r border-[#E2E8F0] shrink-0 z-50 transition-transform duration-300 ease-in-out",
-        // Mobile: fixed overlay, slides in/out
+        "flex flex-col w-[240px] min-h-screen bg-white border-r border-gray-200 shrink-0 z-50 transition-transform duration-300 ease-in-out",
         "fixed inset-y-0 left-0",
         isOpen ? "translate-x-0" : "-translate-x-full",
-        // Desktop: always visible in normal flow
         "lg:relative lg:translate-x-0"
       )}
     >
       {/* Brand */}
-      <div className="flex items-center gap-3 px-5 pt-6 pb-5">
-        <div className="relative w-9 h-9 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md shadow-violet-300/50">
-            <span className="text-white font-bold text-[15px] tracking-tight">N</span>
-          </div>
+      <div className="flex items-center gap-2.5 px-4 pt-5 pb-4">
+        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+          <span className="text-white font-bold text-[14px]">N</span>
         </div>
         <div className="min-w-0">
-          <p className="text-[14px] font-bold text-slate-900 leading-tight tracking-tight">Nebs BD OS</p>
-          <p className="text-[11px] text-slate-400 font-medium truncate">Business Dev Portal</p>
+          <p className="text-[13px] font-bold text-gray-900 leading-tight">Nebs BD OS</p>
+          <p className="text-[11px] text-gray-400 truncate">Business Dev Portal</p>
         </div>
       </div>
 
-      <div className="mx-4 h-px bg-slate-100 mb-2" />
+      <div className="mx-4 h-px bg-gray-100" />
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 overflow-y-auto pb-2">
+      <nav className="flex-1 px-3 overflow-y-auto py-2">
         <SectionLabel label="Main Menu" />
         <div className="space-y-0.5">
           {navItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
@@ -155,26 +151,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* User card */}
       <div className="px-3 pb-4 pt-2">
-        <div className="mx-px h-px bg-slate-100 mb-3" />
-        <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-gradient-to-br from-slate-50 to-violet-50/40 border border-slate-100">
+        <div className="h-px bg-gray-100 mb-3" />
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-100">
           <div className="relative shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+            <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
               {initial}
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border-2 border-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-slate-800 truncate leading-tight">{name}</p>
-            <span className={cn("inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded-md mt-0.5", ROLE_COLORS[role])}>
+            <p className="text-[12px] font-semibold text-gray-800 truncate leading-tight">{name}</p>
+            <span className={cn("inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded mt-0.5", ROLE_COLORS[role])}>
               {ROLE_LABELS[role]}
             </span>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex items-center gap-2.5 px-3 py-2.5 mt-1 w-full rounded-xl text-[13px] font-medium text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all"
+          className="flex items-center gap-2 px-3 py-2 mt-1 w-full rounded-lg text-[12px] font-medium text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-3.5 h-3.5" />
           Sign out
         </button>
       </div>
