@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { Modal } from "@/components/shared/Modal";
-import { FormField, inputClass } from "@/components/shared/FormField";
+import { FormField, inputClass, selectClass } from "@/components/shared/FormField";
 import { ExportButtons } from "@/components/shared/ExportButtons";
 import { formatDate } from "@/lib/utils";
 import { Plus, Pencil, Trash2, Search, Users, Globe, Layers, UserCheck } from "lucide-react";
@@ -19,6 +20,8 @@ interface Client {
   createdAt: string;
   user?: { name: string };
 }
+
+interface TeamMember { id: string; name: string; }
 
 const empty = { name: "", email: "", phone: "", country: "", businessName: "", platform: "" };
 
@@ -70,7 +73,10 @@ function CountryBadge({ country }: { country: string }) {
 }
 
 export default function ClientsPage() {
+  const { data: session } = useSession();
   const [clients, setClients] = useState<Client[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [selectedBdmId, setSelectedBdmId] = useState("");
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
   const [selected, setSelected] = useState<Client | null>(null);
@@ -80,8 +86,9 @@ export default function ClientsPage() {
 
   const load = () =>
     fetch("/api/clients").then((r) => r.json()).then(setClients);
+  const loadTeam = () => fetch("/api/users").then((r) => r.json()).then(setTeamMembers).catch(() => {});
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); loadTeam(); }, []);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -100,7 +107,12 @@ export default function ClientsPage() {
     )
   );
 
-  const openAdd = () => { setForm(empty); setError(""); setModal("add"); };
+  const openAdd = () => {
+    setForm(empty);
+    setError("");
+    setSelectedBdmId((session?.user as { id?: string })?.id ?? "");
+    setModal("add");
+  };
   const openEdit = (c: Client) => {
     setSelected(c);
     setForm({ name: c.name, email: c.email, phone: c.phone, country: c.country, businessName: c.businessName, platform: c.platform });
@@ -111,8 +123,9 @@ export default function ClientsPage() {
   const save = async () => {
     setLoading(true); setError("");
     try {
+      const payload = modal === "add" ? { ...form, ...(selectedBdmId && { createdById: selectedBdmId }) } : form;
       const res = modal === "add"
-        ? await fetch("/api/clients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) })
+        ? await fetch("/api/clients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
         : await fetch(`/api/clients/${selected!.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       if (!res.ok) { const e = await res.json(); setError(e.error ?? "Error"); return; }
       await load(); setModal(null);
@@ -281,6 +294,16 @@ export default function ClientsPage() {
           <FormField label="Platform" required>
             <input value={form.platform} onChange={(e) => setForm({ ...form, platform: e.target.value })} className={inputClass()} placeholder="Upwork, Fiverr, LinkedIn…" />
           </FormField>
+          {modal === "add" && teamMembers.length > 0 && (
+            <FormField label="Added By (BDM)" className="col-span-2">
+              <select value={selectedBdmId} onChange={(e) => setSelectedBdmId(e.target.value)} className={selectClass()}>
+                <option value="">— Select team member —</option>
+                {teamMembers.map((u) => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </select>
+            </FormField>
+          )}
         </div>
         <div className="flex justify-end gap-2 mt-6">
           <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500 transition-all">

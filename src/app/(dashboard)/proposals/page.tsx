@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { type ComponentType } from "react";
+import { useSession } from "next-auth/react";
 import { Modal } from "@/components/shared/Modal";
 import { FormField, inputClass, selectClass } from "@/components/shared/FormField";
 import { ExportButtons } from "@/components/shared/ExportButtons";
@@ -34,6 +35,12 @@ interface Proposal {
     businessName: string;
     platform: string;
   };
+  user?: { name: string };
+}
+
+interface TeamMember {
+  id: string;
+  name: string;
 }
 
 interface Client {
@@ -83,7 +90,10 @@ function StatCard({ icon: Icon, label, value, iconBg, iconColor }: {
 }
 
 export default function ProposalsPage() {
+  const { data: session } = useSession();
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [selectedBdmId, setSelectedBdmId] = useState("");
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState<"add" | "edit" | "update" | null>(null);
   const [selected, setSelected] = useState<Proposal | null>(null);
@@ -92,9 +102,11 @@ export default function ProposalsPage() {
   const [clientInfo, setClientInfo] = useState<Client | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [updateError, setUpdateError] = useState("");
 
   const load = () => fetch("/api/proposals").then((r) => r.json()).then(setProposals);
-  useEffect(() => { load(); }, []);
+  const loadTeam = () => fetch("/api/users").then((r) => r.json()).then(setTeamMembers).catch(() => {});
+  useEffect(() => { load(); loadTeam(); }, []);
 
   const filtered = proposals.filter((p) =>
     [p.projectName, p.client.name, p.client.clientId, p.platform].some((v) =>
@@ -105,11 +117,20 @@ export default function ProposalsPage() {
   const lookupClient = async (clientId: string) => {
     if (!clientId) return;
     const res = await fetch(`/api/clients/lookup?clientId=${clientId}`);
-    if (res.ok) setClientInfo(await res.json());
-    else setClientInfo(null);
+    if (res.ok) {
+      const client = await res.json();
+      setClientInfo(client);
+      setForm((f) => ({ ...f, platform: client.platform }));
+    } else setClientInfo(null);
   };
 
-  const openAdd = () => { setForm(emptyForm); setClientInfo(null); setError(""); setModal("add"); };
+  const openAdd = () => {
+    setForm(emptyForm);
+    setClientInfo(null);
+    setError("");
+    setSelectedBdmId((session?.user as { id?: string })?.id ?? "");
+    setModal("add");
+  };
   const openEdit = (p: Proposal) => {
     setSelected(p);
     setForm({
@@ -131,18 +152,24 @@ export default function ProposalsPage() {
   const save = async () => {
     setLoading(true); setError("");
     try {
+      const payload = modal === "add" ? { ...form, ...(selectedBdmId && { createdById: selectedBdmId }) } : form;
       const res = modal === "add"
-        ? await fetch("/api/proposals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) })
-        : await fetch(`/api/proposals/${selected!.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+        ? await fetch("/api/proposals", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+        : await fetch(`/api/proposals/${selected!.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!res.ok) { const e = await res.json(); setError(e.error ?? "Error"); return; }
       await load(); setModal(null);
     } finally { setLoading(false); }
   };
 
   const saveUpdate = async () => {
-    setLoading(true);
+    setLoading(true); setUpdateError("");
     try {
-      await fetch(`/api/proposals/${selected!.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updateForm) });
+      const res = await fetch(`/api/proposals/${selected!.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateForm),
+      });
+      if (!res.ok) { const e = await res.json(); setUpdateError(e.error ?? "Update failed"); return; }
       await load(); setModal(null);
     } finally { setLoading(false); }
   };
@@ -194,14 +221,14 @@ export default function ProposalsPage() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {["Client", "Project", "Platform", "Service", "Amount", "Costing", "Status", "Follow Up", "Date", ""].map((h) => (
+                {["Client", "Project", "Platform", "Service", "Amount", "Costing", "Status", "Follow Up", "Added By", "Date", ""].map((h) => (
                   <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={10}>
+                <tr><td colSpan={11}>
                   <div className="flex flex-col items-center justify-center py-16 text-gray-400">
                     <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
                       <FileText className="w-5 h-5 text-gray-300" />
@@ -229,6 +256,7 @@ export default function ProposalsPage() {
                     <td className="px-5 py-3.5 text-[13px] text-gray-500">{formatCurrency(p.costing)}</td>
                     <td className="px-5 py-3.5"><StatusBadge status={p.currentStatus} label={PROPOSAL_STATUS_LABELS[p.currentStatus] ?? p.currentStatus} /></td>
                     <td className="px-5 py-3.5 text-[13px] text-center text-gray-500">{p.followUp > 0 ? `FU ${p.followUp}` : <span className="text-gray-300">—</span>}</td>
+                    <td className="px-5 py-3.5 text-[12px] text-gray-500 whitespace-nowrap">{p.user?.name ?? <span className="text-gray-300">—</span>}</td>
                     <td className="px-5 py-3.5 text-[12px] text-gray-400 whitespace-nowrap">{formatDate(p.createdAt)}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -289,6 +317,16 @@ export default function ProposalsPage() {
           <FormField label="Message to Client" className="col-span-2">
             <textarea rows={2} value={form.messageToClient} onChange={(e) => setForm({ ...form, messageToClient: e.target.value })} className={inputClass()} placeholder="Message..." />
           </FormField>
+          {modal === "add" && teamMembers.length > 0 && (
+            <FormField label="Added By (BDM)" className="col-span-2">
+              <select value={selectedBdmId} onChange={(e) => setSelectedBdmId(e.target.value)} className={selectClass()}>
+                <option value="">— Select team member —</option>
+                {teamMembers.map((u) => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </select>
+            </FormField>
+          )}
         </div>
         <div className="flex justify-end gap-2 mt-6">
           <button onClick={() => setModal(null)} className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600">Cancel</button>
@@ -299,6 +337,7 @@ export default function ProposalsPage() {
       </Modal>
 
       <Modal isOpen={modal === "update"} onClose={() => setModal(null)} title="Update Proposal Status">
+        {updateError && <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded-lg font-medium">{updateError}</p>}
         <div className="space-y-4">
           <FormField label="Current Status">
             <select value={updateForm.currentStatus} onChange={(e) => setUpdateForm({ ...updateForm, currentStatus: e.target.value })} className={selectClass()}>

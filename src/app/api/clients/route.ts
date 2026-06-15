@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const body = await request.json();
-  const { name, email, phone, country, businessName, platform } = body;
+  const { name, email, phone, country, businessName, platform, createdById } = body;
   if (!name || !email || !phone || !country || !businessName || !platform) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       country,
       businessName,
       platform,
-      createdById: session.user.id,
+      createdById: createdById || session.user.id,
     },
   });
   return Response.json(client, { status: 201 });

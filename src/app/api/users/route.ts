@@ -7,19 +7,20 @@ export async function GET() {
   const session = await auth();
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const role = (session.user as { role: string }).role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
-    return Response.json({ error: "Forbidden" }, { status: 403 });
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN";
+
+  if (isAdmin) {
+    const users = await prisma.user.findMany({
+      select: { id: true, name: true, email: true, designation: true, role: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return Response.json(users);
   }
+
+  // All authenticated users can see a minimal list for BDM dropdowns
   const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      designation: true,
-      role: true,
-      createdAt: true,
-    },
-    orderBy: { createdAt: "desc" },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
   });
   return Response.json(users);
 }

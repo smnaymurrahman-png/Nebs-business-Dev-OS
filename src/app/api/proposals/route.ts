@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     connectIn,
     costing,
     serviceType,
+    createdById,
   } = body;
   const clientRecord = await prisma.client.findUnique({ where: { clientId } });
   if (!clientRecord) {
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
       connectIn: parseInt(connectIn),
       costing: parseFloat(costing),
       serviceType,
-      createdById: session.user.id,
+      createdById: createdById || session.user.id,
     },
     include: { client: true },
   });
