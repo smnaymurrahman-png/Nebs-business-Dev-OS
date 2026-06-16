@@ -21,6 +21,7 @@ import {
   GitPullRequest,
   UserCircle2,
   Tag,
+  Wallet,
 } from "lucide-react";
 
 const navItems = [
@@ -44,6 +45,7 @@ const affiliateAdminItems = [
   { href: "/admin/affiliate/meetings",       label: "Meetings",          icon: CalendarDays },
   { href: "/admin/affiliate/meeting-persons",label: "Meeting Persons",   icon: UserCircle2 },
   { href: "/admin/affiliate/offers",         label: "Offers",            icon: Tag },
+  { href: "/admin/affiliate/payouts",        label: "Payouts",           icon: Wallet },
 ];
 
 const superAdminItems = [
