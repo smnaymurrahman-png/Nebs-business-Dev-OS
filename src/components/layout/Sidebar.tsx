@@ -17,6 +17,8 @@ import {
   Settings,
   ShieldCheck,
   ChevronRight,
+  Inbox,
+  GitPullRequest,
 } from "lucide-react";
 
 const navItems = [
@@ -32,6 +34,11 @@ const navItems = [
 
 const adminItems = [
   { href: "/admin/users", label: "Manage Users", icon: Settings },
+];
+
+const affiliateAdminItems = [
+  { href: "/admin/affiliate/incoming", label: "Incoming Requests", icon: Inbox },
+  { href: "/admin/affiliate/pipeline", label: "Pipeline",          icon: GitPullRequest },
 ];
 
 const superAdminItems = [
@@ -135,6 +142,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <SectionLabel label="Admin" />
             <div className="space-y-0.5">
               {adminItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
+            </div>
+            <SectionLabel label="Affiliate Admin" />
+            <div className="space-y-0.5">
+              {affiliateAdminItems.map((item) => <NavLink key={item.href} {...item} onClose={onClose} />)}
             </div>
           </>
         )}
