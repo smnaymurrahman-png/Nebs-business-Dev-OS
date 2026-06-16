@@ -493,6 +493,7 @@ model AffiliateMeeting {
   leadId          String               @map("lead_id")
   affiliateId     String               @map("affiliate_id")
   topic           String
+  preferredAt     DateTime?            @map("preferred_at")
   scheduledAt     DateTime?            @map("scheduled_at")
   locationType    MeetingLocationType? @map("location_type")
   meetingLink     String?              @map("meeting_link")
