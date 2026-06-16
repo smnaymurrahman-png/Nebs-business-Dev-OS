@@ -32,6 +32,16 @@ export async function PUT(req: NextRequest, { params }: Params) {
       where: { id },
       data: { status: "APPROVED", processedBy: session.user.id },
     });
+
+    prisma.notification.create({
+      data: {
+        recipientType: "AFFILIATE",
+        recipientId: payout.affiliateId,
+        type: "PAYOUT_APPROVED",
+        payload: { payoutId: id, amount: Number(payout.amount) },
+      },
+    }).catch(() => {});
+
     return Response.json(updated);
   }
 
@@ -77,6 +87,15 @@ export async function PUT(req: NextRequest, { params }: Params) {
         });
       }
     });
+
+    prisma.notification.create({
+      data: {
+        recipientType: "AFFILIATE",
+        recipientId: payout.affiliateId,
+        type: "PAYOUT_PAID",
+        payload: { payoutId: id, amount: payoutAmount },
+      },
+    }).catch(() => {});
 
     return Response.json({ success: true });
   }

@@ -2,22 +2,48 @@ import { getAffiliateSession } from "@/lib/affiliate-auth";
 import { prisma } from "@/lib/prisma";
 import { CopyReferralLink } from "@/components/affiliate/CopyReferralLink";
 
+export const dynamic = "force-dynamic";
+
 export default async function AffiliateDashboardPage() {
   const session = await getAffiliateSession();
   if (!session) return null;
 
-  const [totalLeads, pendingLeads, acceptedLeads, onboardedLeads] = await Promise.all([
+  const now = new Date();
+
+  // Auto-release PENDING commissions past their releaseDate
+  await prisma.commission.updateMany({
+    where: { affiliateId: session.id, status: "PENDING", releaseDate: { lte: now } },
+    data: { status: "AVAILABLE" },
+  });
+
+  const [totalLeads, pendingLeads, acceptedLeads, onboardedLeads, commAgg] = await Promise.all([
     prisma.lead.count({ where: { affiliateId: session.id } }),
     prisma.lead.count({ where: { affiliateId: session.id, leadStatus: "SUBMITTED" } }),
     prisma.lead.count({ where: { affiliateId: session.id, leadStatus: "ACCEPTED" } }),
     prisma.lead.count({ where: { affiliateId: session.id, leadStatus: "ONBOARDED" } }),
+    prisma.commission.groupBy({
+      by: ["status"],
+      where: { affiliateId: session.id },
+      _sum: { amount: true },
+    }),
   ]);
+
+  const balanceByStatus: Record<string, number> = {};
+  for (const row of commAgg) {
+    balanceByStatus[row.status] = Number(row._sum.amount ?? 0);
+  }
 
   const stats = [
     { label: "Total Leads",    value: totalLeads,    color: "bg-violet-50 text-violet-700 border-violet-100" },
     { label: "Pending Review", value: pendingLeads,  color: "bg-amber-50 text-amber-700 border-amber-100" },
     { label: "Accepted",       value: acceptedLeads, color: "bg-blue-50 text-blue-700 border-blue-100" },
     { label: "Onboarded",      value: onboardedLeads, color: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+  ];
+
+  const commissionRows = [
+    { label: "Pending (hold)", amount: balanceByStatus["PENDING"] ?? 0,   color: "text-amber-600" },
+    { label: "Available",      amount: balanceByStatus["AVAILABLE"] ?? 0, color: "text-emerald-600" },
+    { label: "Paid out",       amount: balanceByStatus["PAID"] ?? 0,      color: "text-gray-500" },
   ];
 
   return (
@@ -49,13 +75,9 @@ export default async function AffiliateDashboardPage() {
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <p className="text-sm font-semibold text-gray-700 mb-4">Commission balance</p>
         <div className="grid grid-cols-3 gap-4 text-center">
-          {[
-            { label: "Pending (hold)", color: "text-amber-600" },
-            { label: "Available",      color: "text-emerald-600" },
-            { label: "Paid",           color: "text-gray-500" },
-          ].map((c) => (
+          {commissionRows.map((c) => (
             <div key={c.label}>
-              <p className={`text-lg font-bold ${c.color}`}>$0.00</p>
+              <p className={`text-lg font-bold ${c.color}`}>${c.amount.toFixed(2)}</p>
               <p className="text-[11px] text-gray-400 mt-0.5">{c.label}</p>
             </div>
           ))}

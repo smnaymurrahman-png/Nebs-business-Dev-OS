@@ -75,6 +75,18 @@ export async function PUT(req: NextRequest, { params }: Params) {
         },
       }),
     ]);
+
+    if (lead.affiliateId) {
+      prisma.notification.create({
+        data: {
+          recipientType: "AFFILIATE",
+          recipientId: lead.affiliateId,
+          type: "LEAD_ACCEPTED",
+          payload: { leadId: id },
+        },
+      }).catch(() => {});
+    }
+
     return Response.json(updated);
   }
 
@@ -95,6 +107,18 @@ export async function PUT(req: NextRequest, { params }: Params) {
         },
       }),
     ]);
+
+    if (lead.affiliateId) {
+      prisma.notification.create({
+        data: {
+          recipientType: "AFFILIATE",
+          recipientId: lead.affiliateId,
+          type: "LEAD_REJECTED",
+          payload: { leadId: id },
+        },
+      }).catch(() => {});
+    }
+
     return Response.json(updated);
   }
 

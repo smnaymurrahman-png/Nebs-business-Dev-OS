@@ -82,5 +82,17 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Notify all admins asynchronously
+  prisma.user.findMany({ where: { role: { in: ["ADMIN", "SUPER_ADMIN"] } }, select: { id: true } })
+    .then((admins) => prisma.notification.createMany({
+      data: admins.map((a) => ({
+        recipientType: "ADMIN" as const,
+        recipientId: a.id,
+        type: "NEW_LEAD",
+        payload: { leadId: lead.id },
+      })),
+    }))
+    .catch(() => {});
+
   return Response.json(lead, { status: 201 });
 }

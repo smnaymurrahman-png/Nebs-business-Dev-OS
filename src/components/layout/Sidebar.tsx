@@ -22,6 +22,8 @@ import {
   UserCircle2,
   Tag,
   Wallet,
+  UserCheck,
+  List,
 } from "lucide-react";
 
 const navItems = [
@@ -46,6 +48,8 @@ const affiliateAdminItems = [
   { href: "/admin/affiliate/meeting-persons",label: "Meeting Persons",   icon: UserCircle2 },
   { href: "/admin/affiliate/offers",         label: "Offers",            icon: Tag },
   { href: "/admin/affiliate/payouts",        label: "Payouts",           icon: Wallet },
+  { href: "/admin/affiliate/affiliates",     label: "Affiliates",        icon: UserCheck },
+  { href: "/admin/affiliate/references",     label: "References",        icon: List },
 ];
 
 const superAdminItems = [
