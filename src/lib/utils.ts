@@ -55,11 +55,27 @@ export const PROFILE_TYPE_LABELS: Record<string, string> = {
 };
 
 export const LEAD_STATUS_LABELS: Record<string, string> = {
+  // BD team statuses
   INTERESTED: "Interested",
   NOT_INTERESTED: "Not Interested",
   NO_RESPONSE: "No Response",
   FOLLOW_UP: "Follow Up",
   PENDING_DECISION: "Pending Decision",
+  // Affiliate pipeline statuses (added by migration 003)
+  SUBMITTED:       "Submitted",
+  ACCEPTED:        "Accepted",
+  QUOTATION_SENT:  "Quotation Sent",
+  NOT_RESPONDING:  "Not Responding",
+  MEETING_PENDING: "Meeting Pending",
+  MEETING_DONE:    "Meeting Done",
+  ONBOARDED:       "Onboarded",
+  REJECTED:        "Rejected",
+};
+
+export const LEAD_INTENT_LABELS: Record<string, string> = {
+  NEED_QUOTATION: "Need Quotation",
+  INTERESTED:     "Interested in Service",
+  URGENT:         "Urgently Needed",
 };
 
 export const AD_PLATFORM_LABELS: Record<string, string> = {
@@ -90,6 +106,15 @@ export const STATUS_COLORS: Record<string, string> = {
   COLD: "bg-sky-50 text-sky-700 ring-1 ring-sky-100",
   HOT: "bg-red-50 text-red-600 ring-1 ring-red-100",
   WARM: "bg-orange-50 text-orange-700 ring-1 ring-orange-100",
+  // Affiliate pipeline
+  SUBMITTED:       "bg-violet-50 text-violet-700 ring-1 ring-violet-100",
+  ACCEPTED:        "bg-blue-50 text-blue-700 ring-1 ring-blue-100",
+  QUOTATION_SENT:  "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100",
+  NOT_RESPONDING:  "bg-gray-100 text-gray-500 ring-1 ring-gray-200",
+  MEETING_PENDING: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
+  MEETING_DONE:    "bg-teal-50 text-teal-700 ring-1 ring-teal-100",
+  ONBOARDED:       "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100",
+  REJECTED:        "bg-red-50 text-red-600 ring-1 ring-red-100",
   LOW: "bg-gray-100 text-gray-600 ring-1 ring-gray-200",
   MEDIUM: "bg-amber-50 text-amber-700 ring-1 ring-amber-100",
   HIGH: "bg-orange-50 text-orange-700 ring-1 ring-orange-100",

@@ -323,7 +323,7 @@ model Lead {
   connection      ConnectionType?
   leadStatus      LeadStatus      @default(INTERESTED)
   lastUpdate      String?
-  createdById     String
+  createdById     String?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -339,8 +339,8 @@ model Lead {
   acceptedBy      String?       @map("accepted_by")
   onboardedAt     DateTime?     @map("onboarded_at")
 
-  // Named — User has two FKs on this table
-  user           User   @relation("LeadCreatedBy", fields: [createdById], references: [id])
+  // Named — User has two FKs on this table; both optional (affiliate leads have no createdById)
+  user           User?  @relation("LeadCreatedBy", fields: [createdById], references: [id])
   acceptedByUser User?  @relation("LeadAcceptedBy", fields: [acceptedBy], references: [id])
 
   // Affiliate OS relations
