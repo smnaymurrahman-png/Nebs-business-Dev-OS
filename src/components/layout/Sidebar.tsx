@@ -20,6 +20,7 @@ import {
   Inbox,
   GitPullRequest,
   UserCircle2,
+  Tag,
 } from "lucide-react";
 
 const navItems = [
@@ -42,6 +43,7 @@ const affiliateAdminItems = [
   { href: "/admin/affiliate/pipeline",       label: "Pipeline",          icon: GitPullRequest },
   { href: "/admin/affiliate/meetings",       label: "Meetings",          icon: CalendarDays },
   { href: "/admin/affiliate/meeting-persons",label: "Meeting Persons",   icon: UserCircle2 },
+  { href: "/admin/affiliate/offers",         label: "Offers",            icon: Tag },
 ];
 
 const superAdminItems = [
