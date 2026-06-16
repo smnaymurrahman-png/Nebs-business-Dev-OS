@@ -13,22 +13,22 @@
 --
 -- PRE-CHECK QUERIES (run these manually, fix any rows returned):
 -- ─────────────────────────────────────────────────────────────────────────────
---   -- Duplicate normalized emails:
---   SELECT lower(email_address) AS normalized_email, count(*), array_agg(id)
+--   -- Duplicate normalized emails (leads table uses camelCase columns):
+--   SELECT lower("emailAddress") AS normalized_email, count(*), array_agg(id)
 --   FROM leads
---   GROUP BY lower(email_address)
+--   GROUP BY lower("emailAddress")
 --   HAVING count(*) > 1;
 --
 --   -- Duplicate normalized phones:
---   SELECT regexp_replace(phone_number, '\D', '', 'g') AS normalized_phone, count(*), array_agg(id)
+--   SELECT regexp_replace("phoneNumber", '\D', '', 'g') AS normalized_phone, count(*), array_agg(id)
 --   FROM leads
---   GROUP BY regexp_replace(phone_number, '\D', '', 'g')
+--   GROUP BY regexp_replace("phoneNumber", '\D', '', 'g')
 --   HAVING count(*) > 1;
 -- ─────────────────────────────────────────────────────────────────────────────
 --
--- NORMALIZATION RULES:
---   email   → lower(email_address)                               e.g. "User@NEBS.com" = "user@nebs.com"
---   phone   → regexp_replace(phone_number, '\D', '', 'g')        strips all non-digit chars
+-- NORMALIZATION RULES (leads table uses Prisma camelCase column names):
+--   email   → lower("emailAddress")                               e.g. "User@NEBS.com" = "user@nebs.com"
+--   phone   → regexp_replace("phoneNumber", '\D', '', 'g')        strips all non-digit chars
 --             e.g. "+880 1711-123456" = "8801711123456"
 --
 -- CONCURRENTLY means the index builds without holding a table lock.
@@ -40,8 +40,14 @@
 
 -- DO NOT WRAP IN BEGIN/COMMIT.
 
+-- Partial index: only enforce uniqueness where emailAddress looks like a real email
+-- (contains '@'). Rows with placeholder values like 'n/a', 'none', '-' are excluded.
 CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS leads_email_normalized_unique
-  ON leads (lower(email_address));
+  ON leads (lower("emailAddress"))
+  WHERE "emailAddress" LIKE '%@%';
 
+-- Partial index: only enforce uniqueness where phoneNumber has ≥ 7 digits.
+-- Placeholder values like '0', 'n/a', or short strings are excluded.
 CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS leads_phone_normalized_unique
-  ON leads (regexp_replace(phone_number, '\D', '', 'g'));
+  ON leads (regexp_replace("phoneNumber", '\D', '', 'g'))
+  WHERE length(regexp_replace("phoneNumber", '\D', '', 'g')) >= 7;
